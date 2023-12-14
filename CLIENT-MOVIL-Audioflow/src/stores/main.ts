@@ -6,9 +6,9 @@ export const useMainStore = defineStore({
     id: 'main',
 
     state: (): {
-
+        token: string;
     } => ({
-
+        token: '',
     }),
     persist: true
 });

@@ -16,7 +16,6 @@ class UserController extends Controller
     {
         $customMessages = [
             'email.required' => 'Debe completar el campo Correo electrónico.',
-            'password.required' => 'Debe completar el campo Contraseña.',
         ];
         try {
             DB::beginTransaction();
@@ -27,7 +26,6 @@ class UserController extends Controller
                     'required',
                     'unique:users,rut',
                     'regex:/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/'],
-                'password' => 'required',
                 'email' => [
                     'required',
                     'regex:/^[a-zA-Z0-9._%+-]+@(alumnos\.ucn\.cl|ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/',
@@ -41,12 +39,13 @@ class UserController extends Controller
                 return response()->json('rut no valido',200);
             }
 
+            $password = str_replace(['.', '-'], '', $fields['rut']);
 
             $user = User::create([
                 'name' => $fields['name'],
                 'email' => $fields['email'],
                 'rut' => $fields['rut'],
-                'password' => Hash::make($fields['password']),
+                'password' => Hash::make($password),
                 'birth_year' => $fields['birth_year'],
             ]);
 

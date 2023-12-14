@@ -7,5 +7,9 @@
 </template>
 
 <script setup lang="ts">
+import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/vue';
+import { useMainStore } from '@/stores/main';
+
+const mainStore = useMainStore();
 
 </script>
