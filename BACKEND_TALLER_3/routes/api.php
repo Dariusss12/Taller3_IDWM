@@ -19,8 +19,9 @@ use App\Http\Controllers\LoginController;
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[UserController::class,'registerUser']);
 
-/*
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+Route::middleware('jwt.verified')->group(function(){
+    Route::put('/users/{user}',[UserController::class,'update']);
+    Route::put('/users/{user}/changePassword',[UserController::class,'changePassword']);
+    Route::post('/logout', [LoginController::class, 'logout']);
 });
-*/
