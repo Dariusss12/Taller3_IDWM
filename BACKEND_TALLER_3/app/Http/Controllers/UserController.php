@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -11,19 +12,36 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     //
-    public function registerUser(Request $request){
+    public function registerUser(Request $request)
+    {
+        $customMessages = [
+            'email.required' => 'Debe completar el campo Correo electrónico.',
+            'password.required' => 'Debe completar el campo Contraseña.',
+        ];
         try {
             DB::beginTransaction();
 
             $fields = $request->validate([
                 'name' => 'required|min:10|max:150',
-                'rut' => 'required|unique:users,rut',
+                'rut' => [
+                    'required',
+                    'unique:users,rut',
+                    'regex:/^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/'],
                 'password' => 'required',
-                'email' => 'required|regex:/^[^@]+@(ucn.cl)$/|unique:users,email',
+                'email' => [
+                    'required',
+                    'regex:/^[a-zA-Z0-9._%+-]+@(alumnos\.ucn\.cl|ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/',
+                    'unique:users,email',
+                ],
                 'birth_year' => 'required|integer|min:1900',
             ]);
 
-            //^(?!.*@.*@)(.+)@(ucn\.cl|alumnos\.ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)
+            $rutValido = Helper::verifyRut($fields['rut']);
+            if(!$rutValido){
+                return response()->json('rut no valido',200);
+            }
+
+
             $user = User::create([
                 'name' => $fields['name'],
                 'email' => $fields['email'],
@@ -37,12 +55,12 @@ class UserController extends Controller
 
             DB::commit();
             return response()->json(['user' => $user, 'token' => $token], 200);
-
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json($e->getMessage(), 500);
+            return response()->json(['error' => $e->errors()], 500);
         }
     }
+
 
     public function update(Request $request, User $user){
         try {
@@ -50,7 +68,11 @@ class UserController extends Controller
 
             $fields = $request->validate([
                 'name' => 'required|min:10|max:150',
-                'email' => 'required|regex:/^(?!.*@.*@)(.+)@(ucn\.cl|alumnos\.ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/i|unique:users,email',
+                'email' => [
+                    'required',
+                    'regex:/^[a-zA-Z0-9._%+-]+@(alumnos\.ucn\.cl|ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/',
+                    'unique:users,email',
+                ],
                 'birth_year' => 'required|integer|min:1900',
             ]);
 
@@ -65,7 +87,7 @@ class UserController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json($e->getMessage(), 500);
+            return response()->json($e->errors(), 500);
         }
     }
 
@@ -94,4 +116,5 @@ class UserController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 }

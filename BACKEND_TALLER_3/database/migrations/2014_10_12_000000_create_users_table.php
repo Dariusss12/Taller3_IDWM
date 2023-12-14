@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('rut')->unique();
             $table->string('password');
-            $table->date('birth_year');
+            $table->integer('birth_year');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();

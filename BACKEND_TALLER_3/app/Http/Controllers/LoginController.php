@@ -17,7 +17,6 @@ class LoginController extends Controller
         // Validar las credenciales
         $validator = Validator::make($request->all(), [
             'email' => 'required',
-            //'regex:/^(.+)@(ucn\.cl|alumnos\.ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/i',
             'password' => 'required',
         ], $customMessages);
 
@@ -28,7 +27,7 @@ class LoginController extends Controller
 
         try{
         // Intentar autenticar al usuario
-            if (!$token = JWTAuth::attempt($request->only('username', 'password'))) {
+            if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
                 return response()->json([
                     'error' => ['credentials' => 'Credenciales incorrectas, intentalo denuevo.']
                 ], 401);

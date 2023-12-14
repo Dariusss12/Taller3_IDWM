@@ -30,7 +30,7 @@ class JwtMiddleware
             }
             if($e instanceof TokenExpiredException){
                 return response()->json([
-                    'status' => 'token expirado'
+                    'status' => 'Token expirado'
                 ],401);
             }
             return response()->json([
