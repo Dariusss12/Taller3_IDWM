@@ -23,6 +23,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/repos',
     component: ReposView,
+    meta: { requiresAuth: true},
   },
 ]
 
@@ -32,7 +33,20 @@ const router = createRouter({
 });
 
 
+router.beforeEach((to, from, next) => {
+  const mainStore = useMainStore();
 
+  if (to.meta.requiresAuth && !mainStore.token) {
+    next('/');
+    return;
+  } else if ((to.path === '/login' || to.path === '/register' || to.path === '/') && mainStore.token) {
+    next('/repos');
+    return;
+  }
+  else {
+    next();
+  }
+});
 
 
 

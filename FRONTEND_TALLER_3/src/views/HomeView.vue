@@ -24,8 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { IonContent, IonPage, IonImg, IonRow, IonButton } from '@ionic/vue';
-import { useMainStore } from '@/stores/main';
+import { IonContent, IonPage, IonImg, IonRow } from '@ionic/vue';
 
 </script>
 

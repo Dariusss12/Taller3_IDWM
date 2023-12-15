@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="container">
-      <router-link to="/" class="fixed mt-3">
+      <router-link to="/" class="fixed mt-3" @click="clearAll()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -53,14 +53,12 @@
             </ion-row>
 
             <ion-row responsive-sm>
-              <ion-col>
-                <ion-button
-                  class="w-4/5 mx-auto font-bold text-white border-white border-4 rounded-2xl"
+              <ion-col class="text-center">
+                <button
+                  class="font-bold text-center w-4/5 text-white bg-[#3880ff] hover:bg-[#3171e0] rounded-2xl p-3.5 my-2"
                   type="submit"
-                  expand="block"
-                  fill="solid"
-                >Registrarse</ion-button>
-                <p class="pt-4 text-base text-center">¿Ya tienes cuenta? <router-link to="/login" class="underline font-bold">Inicia sesión aquí</router-link></p>
+                >Registrarse</button>
+                <p class="pt-4 text-base text-center">¿Ya tienes cuenta? <router-link to="/login" class="underline font-bold" @click="clearAll()">Inicia sesión aquí</router-link></p>
               </ion-col>
             </ion-row>       
           </form>
@@ -114,7 +112,6 @@ async function submitForm(): Promise<void> {
       mainStore.token = response.token;
       mainStore.userId = response.user.email;
       const username = await getUsername(response.user.email);
-      console.log(username.data.items[0].login)
       mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')
       
@@ -122,6 +119,15 @@ async function submitForm(): Promise<void> {
     errors = { ...error.response.data } || {};
     forceRerender();
   }
+}
+
+function clearAll(){
+  formData.value.name = '';
+  formData.value.email = '';
+  formData.value.birth_year = currentYear;
+  formData.value.rut = '';
+  errors = ref<FormErrors>({});
+
 }
 
 </script>

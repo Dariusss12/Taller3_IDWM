@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="container" >
-      <router-link to="/" class="fixed mt-3">
+      <router-link to="/" class="fixed mt-3" @click="clearAll()">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -36,14 +36,12 @@
             </ion-row>
             <p v-if="errors.credentials" class="text-sm text-[#ff0000] w-4/5 mx-auto mt-1">{{ errors.credentials}}</p>
             <ion-row responsive-sm>
-              <ion-col>
-                <ion-button
-                  class="w-4/5 mx-auto font-bold text-white border-white border-4 rounded-2xl"
+              <ion-col class="text-center">
+                <button
+                  class="font-bold text-center w-4/5 text-white bg-[#3880ff] hover:bg-[#3171e0] rounded-2xl p-3.5 my-2"
                   type="submit"
-                  expand="block"
-                  fill="solid"
-                >Iniciar Sesión</ion-button>
-                <p class="pt-4 text-base text-center">¿No tienes cuenta? <router-link to="/register" class="underline font-bold">Regístrate aquí</router-link></p>
+                >Iniciar Sesión</button>
+                <p class="pt-4 text-base text-center">¿No tienes cuenta? <router-link to="/register" @click="clearAll()"  class="underline font-bold">Regístrate aquí</router-link></p>
               </ion-col>
             </ion-row>       
           </form>
@@ -101,15 +99,16 @@ async function submitForm(): Promise<void> {
       
   } catch (error: any) {
     errors = { ...error.response.data } || {};
-    console.log(errors)
     forceRerender();
   }
 }
 
-onMounted(async () => {
-    formData.value.email = '';
-    formData.value.password = ''
-});
+function clearAll(){
+  formData.value.email = '';
+  formData.value.password = '';
+  errors = ref<FormErrors>({});
+
+}
 
 </script>
 
