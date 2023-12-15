@@ -10,15 +10,9 @@
                     ></ion-img>
                 </ion-row>
                 <ion-row class="w-full grid grid-cols-1 grid-rows-2">
-                    <ion-button
-                        class="w-4/5 mx-auto font-bold text-white border-white border-4 rounded-2xl"
-                        type="submit"
-                        expand="block"
-                        fill="solid"
-                    >
-                    <router-link to="/login" class="font-bold text-center">Inicia Sesión</router-link>
-                    </ion-button>
-                    <router-link to="/register" class="font-bold text-center">Regístrate</router-link>
+                    <router-link to="/login" class="font-bold text-center w-4/5 mx-auto text-white bg-[#3880ff] hover:bg-[#3171e0] rounded-2xl p-3.5">Inicia Sesión</router-link>
+
+                    <router-link to="/register" class="font-bold text-center mt-2">Regístrate</router-link>
                 </ion-row>
 
             </div>
@@ -31,6 +25,7 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonImg, IonRow, IonButton } from '@ionic/vue';
+import { useMainStore } from '@/stores/main';
 
 </script>
 

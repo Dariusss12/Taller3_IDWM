@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Validator;
@@ -38,8 +39,13 @@ class LoginController extends Controller
             ,500);
         }
 
+        $user = User::where('email', $request->email)->firstOrFail();
+
         // Autenticación exitosa, retornar el token
-        return response()->json(compact('token'), 200);
+        return response()->json([
+            'user' => $user,
+            'token' => $token
+        ], 200);
     }
 
     public function logout()

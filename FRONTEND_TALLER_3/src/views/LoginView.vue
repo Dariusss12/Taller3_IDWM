@@ -1,12 +1,12 @@
 <template>
   <ion-page>
-    <ion-content :fullscreen="true" class="container">
+    <ion-content :fullscreen="true" class="container" >
       <router-link to="/" class="fixed mt-3">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
       </router-link>
-      <div class="flex h-full items-center">
+      <div class="flex h-full items-center" :key="componentKey">
         <div>
           <ion-row>
           <ion-img
@@ -57,10 +57,11 @@
 
 <script setup lang="ts">
 import { IonContent, IonPage, IonImg, IonRow, IonInput, IonButton, IonCol, IonLabel } from '@ionic/vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useMainStore } from '@/stores/main';
 import { LoginCredentials, FormErrors } from '../interfaces/auth'
 import { login } from '../backend/auth'
+import { getUsername } from '../backend/github'
 import router from '@/router';
 
 const mainStore = useMainStore();
@@ -90,10 +91,13 @@ async function submitForm(): Promise<void> {
   errors.value = {};
 
   try {
-      console.log(formData.value)
       const response = await login(formData.value);
-      mainStore.token = response.token
+      mainStore.token = response.token;
+      mainStore.userId = response.user.email;
+      const username = await getUsername(response.user.email);
+      mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')
+      forceRerender();
       
   } catch (error: any) {
     errors = { ...error.response.data } || {};
@@ -101,6 +105,11 @@ async function submitForm(): Promise<void> {
     forceRerender();
   }
 }
+
+onMounted(async () => {
+    formData.value.email = '';
+    formData.value.password = ''
+});
 
 </script>
 

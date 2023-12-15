@@ -77,6 +77,7 @@ import { ref } from 'vue';
 import { useMainStore } from '@/stores/main';
 import { RegisterCredentials, FormErrors } from '../interfaces/auth'
 import { register } from '../backend/auth'
+import { getUsername } from '../backend/github'
 import router from '@/router';
 
 
@@ -110,7 +111,11 @@ async function submitForm(): Promise<void> {
 
   try {
       const response = await register(formData.value);
-      mainStore.token = response.token
+      mainStore.token = response.token;
+      mainStore.userId = response.user.email;
+      const username = await getUsername(response.user.email);
+      console.log(username.data.items[0].login)
+      mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')
       
   } catch (error: any) {

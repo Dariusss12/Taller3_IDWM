@@ -31,24 +31,10 @@ const router = createRouter({
   routes,
 });
 
-/*
 
-// Guardia de navegación para verificar autenticación
-router.beforeEach((to, from, next) => {
-  const mainStore = useMainStore();
 
-  if (to.meta.requiresAuth && mainStore.token === '') {
-    router.push('/login');
-    return;
-  } else if ((to.path === '/login' || to.path === '/register') && mainStore.token != '') {
-    next('/');
-    return;
-  }
-  else {
-    next();
-  }
-});
-*/
+
+
 
 
 export default router

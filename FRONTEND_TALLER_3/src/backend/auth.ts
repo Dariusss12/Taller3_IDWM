@@ -14,25 +14,25 @@ export async function register(credentials: RegisterCredentials) {
 
 export async function logout(){
     // Obtén el token del localStorage
-    const token = useMainStore().token;
-  
-    // Verifica si el token está presente
-    if (!token) {
-      console.error('No se encontró el token en localStorage');
-      return false;
-    }
+    const mainStore = useMainStore()
+
+    const token = mainStore.token;
   
     try {
       // Realiza la solicitud de logout con el token en el encabezado
-      const response = await api.post('/logout', {
+        const response = await api.post('/logout', null, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-  
+      
+      
       // Si la solicitud tiene éxito, realiza otras acciones según sea necesario
       // ...
-      useMainStore().token = '';
+      mainStore.token = '';
+      mainStore.githubUsername = '';
+      mainStore.userId = ''
+      
       return response; // Indica que el logout fue exitoso
   
     } catch (error) {
