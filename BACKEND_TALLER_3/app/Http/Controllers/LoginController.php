@@ -22,20 +22,20 @@ class LoginController extends Controller
 
         // Si la validación falla, retornar los errores
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 422);
+            return response()->json($validator->errors(), 422);
         }
 
         try{
         // Intentar autenticar al usuario
             if (!$token = JWTAuth::attempt($request->only('email', 'password'))) {
                 return response()->json([
-                    'error' => ['credentials' => 'Credenciales incorrectas, intentalo denuevo.']
+                    'credentials' => 'Credenciales incorrectas, intentalo denuevo.'
                 ], 401);
             }
         }catch (JWTException $e){
-            return response()->json([
-                'error' => 'Error del servidor'
-            ],500);
+            return response()->json(
+                'Error del servidor'
+            ,500);
         }
 
         // Autenticación exitosa, retornar el token
@@ -48,13 +48,13 @@ class LoginController extends Controller
             // Invalidar el token actual del usuario
             JWTAuth::invalidate(JWTAuth::parseToken());
 
-            return response()->json([
-                'message' => 'Logout exitoso.'
-            ], 200);
+            return response()->json(
+              'Logout exitoso.'
+            , 200);
         } catch (JWTException $e) {
-            return response()->json([
-                'error' => 'Error del servidor al intentar cerrar sesión.'
-            ], 500);
+            return response()->json(
+                'Error del servidor al intentar cerrar sesión.'
+            , 500);
         }
     }
 }

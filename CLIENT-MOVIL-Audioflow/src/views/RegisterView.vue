@@ -1,59 +1,70 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="container">
-      <div class="content-center">
-        <ion-row>
-        <ion-img
-          class="w-1/2 h-1/2 mx-auto my-3"
-          src="/MobileHub.png"
-        ></ion-img>
-        </ion-row>
-
-        <h2 class="text-3xl text-center mx-auto">¡Regístrate!</h2>
-        <form @submit.prevent="" class="my-5">
-          <ion-row responsive-sm class="gap-4 ion-padding">
-            <ion-row class="w-full grid grid-cols-1 grid-rows-2">
-              <div class="w-4/5 mx-auto">
-                <ion-label class="text-sm text-left font-bold align-baseline">NOMBRE COMPLETO</ion-label>
-              </div>
-              <input type="text" v-model="formData.name" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
-            </ion-row>
-
-            <ion-row class="w-full grid grid-cols-1 grid-rows-2">
-              <div class="w-4/5 mx-auto">
-                <ion-label class="text-sm text-left font-bold">CORREO ELECTRÓNICO</ion-label>
-              </div>
-              <input type="text" v-model="formData.email" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
-            </ion-row>
-
-            <ion-row class="w-full grid grid-cols-1 grid-rows-2">
-              <div class="w-4/5 mx-auto">
-                <ion-label class="text-sm text-left font-bold align-baseline">AÑO DE NACIMIENTO</ion-label>
-              </div>
-              <input type="number" v-model="formData.birth_year" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
-            </ion-row>
-
-            <ion-row class="w-full grid grid-cols-1 grid-rows-2">
-              <div class="w-4/5 mx-auto">
-                <ion-label class="text-sm text-left font-bold align-baseline">RUT</ion-label>
-              </div>
-              <input type="text" v-model="formData.rut" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2" placeholder="xx.xxx.xxx-x">
-            </ion-row>
-
+      <router-link to="/" class="fixed mt-3">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </router-link>
+      <div class="flex h-full items-center" :key="componentKey">
+        <div>
+          <ion-row>
+          <ion-img
+            class="w-1/2 h-1/2 mx-auto mb-5 mt-[20%]"
+            src="/MobileHub.png"
+          ></ion-img>
           </ion-row>
-          <p  class="pt-3 pl-2 pb-1 text-sm text-start indent-8 text-[#ff0000] font-bold"></p>
-          <ion-row responsive-sm>
-            <ion-col>
-              <ion-button
-                class="w-4/5 mx-auto font-bold text-white border-white border-4 rounded-2xl"
-                type="submit"
-                expand="block"
-                fill="solid"
-              >Registrarse</ion-button>
-              <p class="pt-4 text-base text-center">¿Ya tienes cuenta? <router-link to="/login" class="underline font-bold">Inicia sesión aquí</router-link></p>
-            </ion-col>
-          </ion-row>       
-        </form>
+  
+          <h2 class="text-3xl text-center mx-auto">¡Regístrate!</h2>
+          <form @submit.prevent="submitForm" class="my-5">
+            <ion-row responsive-sm class="gap-4 ion-padding">
+              <ion-row class="w-full flex h-full items-center">
+                <div class="w-4/5 mx-auto">
+                  <ion-label class="text-sm text-left font-bold align-baseline">NOMBRE COMPLETO</ion-label>
+                </div>
+                <input type="text" v-model="formData.name" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
+                <p v-if="errors.name"  class="text-sm text-[#ff0000] w-4/5 mx-auto mt-1">{{ errors.name[0] }}</p>
+              </ion-row>
+  
+              <ion-row class="w-full flex h-full items-center">
+                <div class="w-4/5 mx-auto">
+                  <ion-label class="text-sm text-left font-bold">CORREO ELECTRÓNICO</ion-label>
+                </div>
+                <input type="text" v-model="formData.email" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
+                <p v-if="errors.email"  class="text-sm text-[#ff0000] w-4/5 mx-auto mt-1">{{ errors.email[0] }}</p>
+              </ion-row>
+  
+              <ion-row class="w-full flex h-full items-center">
+                <div class="w-4/5 mx-auto">
+                  <ion-label class="text-sm text-left font-bold align-baseline">AÑO DE NACIMIENTO</ion-label>
+                </div>
+                <input type="number" v-model="formData.birth_year" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2">
+                <p v-if="errors.birth_year"  class="text-sm text-[#ff0000] w-4/5 mx-auto mt-1">{{ errors.birth_year[0] }}</p>
+              </ion-row>
+  
+              <ion-row class="w-full flex h-full items-center">
+                <div class="w-4/5 mx-auto">
+                  <ion-label class="text-sm text-left font-bold align-baseline">RUT</ion-label>
+                </div>
+                <input type="text" v-model="formData.rut" class="bg-gray-200 text-black rounded-lg h-12 w-4/5 mx-auto opacity-80 px-2" placeholder="xx.xxx.xxx-x">
+                <p v-if="errors.rut"  class="text-sm text-[#ff0000] w-4/5 mx-auto mt-1">{{ errors.rut[0] }}</p>
+              </ion-row>
+  
+            </ion-row>
+
+            <ion-row responsive-sm>
+              <ion-col>
+                <ion-button
+                  class="w-4/5 mx-auto font-bold text-white border-white border-4 rounded-2xl"
+                  type="submit"
+                  expand="block"
+                  fill="solid"
+                >Registrarse</ion-button>
+                <p class="pt-4 text-base text-center">¿Ya tienes cuenta? <router-link to="/login" class="underline font-bold">Inicia sesión aquí</router-link></p>
+              </ion-col>
+            </ion-row>       
+          </form>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -64,12 +75,27 @@
 import {IonContent, IonPage, IonImg, IonRow, IonInput,IonButton,IonCol, IonLabel } from '@ionic/vue';
 import { ref } from 'vue';
 import { useMainStore } from '@/stores/main';
-import { RegisterCredentials } from '../interfaces/auth'
+import { RegisterCredentials, FormErrors } from '../interfaces/auth'
+import { register } from '../backend/auth'
+import router from '@/router';
+
+
+/**
+ * Se define una variable como key
+ */
+ const componentKey = ref(0);
+
+/**
+ * Funcion para cambiar el valor de componentKey y asì forzar el re-renderizado de los modals
+ */
+const forceRerender = () => {
+  componentKey.value += 1;
+};
 
 const currentYear: number = new Date().getFullYear();
 const mainStore = useMainStore();
 
-const errors = ref<string>(''); 
+let errors = ref<FormErrors>({});
 
 
 const formData = ref<RegisterCredentials>({
@@ -80,42 +106,16 @@ const formData = ref<RegisterCredentials>({
 });
 
 async function submitForm(): Promise<void> {
-  errors.value = '';
+  errors.value = {};
 
   try {
-      await registerUser(formData.value);
-    
-      try {
-        const user = await loginUser({
-          email: formData.value.email,
-          password: formData.value.password
-        });
-        mainStore.loginUser(user);
-
-        // user.player.queue = await loadQueue(user.player.id); //AGREGAR FIRESTORE PARA GUARDAR Y CARGAR DATOS DEL MUSICPLAYER
-        playerStore.storePlayer(user.player);
-
-        const userPlaylists = await fetchUserPlaylists();
-        mainStore.loadMyPlaylists(userPlaylists);
-        router.push('/');
-
-      } catch (error: any) {
-        console.log(error);
-      };
-    
+      const response = await register(formData.value);
+      mainStore.token = response.token
+      router.push('/repos')
+      
   } catch (error: any) {
-    if (error.response && error.response.data.error) {
-        const mappedErrors = await mapZodErrors(error);
-        errors.value = mappedErrors;
-      };
-
-      if (formData.value.password !== formData.value.confirmPassword ) {
-        errors.value.confirmPassword = "Las contraseñas no coinciden";
-      };
-
-      if (formData.value.confirmPassword == "" ) {
-        errors.value.confirmPassword = "Este campo no puede ser vacío";
-      };
+    errors = { ...error.response.data } || {};
+    forceRerender();
   }
 }
 

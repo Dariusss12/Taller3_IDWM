@@ -82,7 +82,7 @@ class UserController extends Controller
             return response()->json(['user' => $user, 'token' => $token], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->errors()], 500);
+            return response()->json($e->errors(), 500);
         }
     }
 
