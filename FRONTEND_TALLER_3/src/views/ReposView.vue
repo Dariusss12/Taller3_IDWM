@@ -1,6 +1,10 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="container">
+        <edit-user-modal
+        v-if="showEditModal" 
+        @close="showEditModal = false"
+        ></edit-user-modal>
         <div class="flex flex-wrap items-center justify-between h-[10%] h-max-10 bg-[#3880ff] text-white w-full">
             <h1 class="font-bold text-xl ml-2">Repositorios</h1>
                 <button @click="cerrarSesion" class="w-8 h-8 hover:text-gray-500 mr-5">
@@ -19,7 +23,18 @@
             
         </div>
 
-        <div class="flex h-[10%] bg-[#2a2a2a] w-full fixed"></div>
+        <div class="flex items-center h-[10%] bg-[#3a3a3a] w-full fixed justify-between ">
+            <div class="w-1/2 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[30%] h-[30%] mx-auto" @click="openEditModal"> 
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                </svg>
+            </div>
+            <div class="w-1/2 text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[30%] h-[30%] mx-auto">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                </svg>
+            </div>
+        </div>
 
 
     </ion-content>
@@ -29,14 +44,24 @@
 <script setup lang="ts">
 import { IonContent, IonPage, IonImg, IonRow, IonButton } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
+import EditUserModal from '@/components/EditUserModal.vue';
 import router from '@/router';
 import { logout } from '../backend/auth'
 import { getRepos } from '@/backend/github';
+
 
 async function cerrarSesion(){
     await logout();
     router.push('/')
 };
+
+const showEditModal = ref(false);
+
+function openEditModal() {
+    if (!showEditModal.value) {
+    showEditModal.value = true;
+  }
+}
 
 const repos = ref([]) 
 

@@ -90,8 +90,10 @@ async function submitForm(): Promise<void> {
 
   try {
       const response = await login(formData.value);
+      mainStore.user = response.user;
       mainStore.token = response.token;
-      mainStore.userId = response.user.email;
+      console.log(response.token)
+      console.log(mainStore.token)
       const username = await getUsername(response.user.email);
       mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')

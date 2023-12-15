@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -114,7 +115,7 @@ class UserController extends Controller
                 'email' => [
                     'required',
                     'regex:/^[a-zA-Z0-9._%+-]+@(alumnos\.ucn\.cl|ucn\.cl|disc\.ucn\.cl|ce\.ucn\.cl)$/',
-                    'unique:users,email',
+                    Rule::unique('users', 'email')->ignore(auth()->id()),
                 ],
                 'birth_year' => [
                     'required',
@@ -122,7 +123,7 @@ class UserController extends Controller
                     'min:1900',
                     'max:' . Carbon::now()->year
                 ],
-            ]);
+            ],$customMessages);
 
             $user->update([
                 'name' => $fields['name'],

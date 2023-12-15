@@ -16,7 +16,7 @@ export async function logout(){
     // Obtén el token del localStorage
     const mainStore = useMainStore()
 
-    const token = mainStore.token;
+    const token = mainStore.user?.token;
   
     try {
       // Realiza la solicitud de logout con el token en el encabezado
@@ -29,9 +29,8 @@ export async function logout(){
       
       // Si la solicitud tiene éxito, realiza otras acciones según sea necesario
       // ...
+      mainStore.user = null;
       mainStore.token = '';
-      mainStore.githubUsername = '';
-      mainStore.userId = ''
       
       return response; // Indica que el logout fue exitoso
   
