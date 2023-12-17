@@ -15,12 +15,12 @@ use App\Http\Controllers\LoginController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+//Login, register and verify Route
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[UserController::class,'registerUser']);
 Route::get('/validate',[UserController::class,'validateToken']);
 
-
+//Protected Routes
 Route::middleware('jwt.verified')->group(function(){
     Route::put('/users/{user}',[UserController::class,'update']);
     Route::put('/users/{user}/changePassword',[UserController::class,'changePassword']);

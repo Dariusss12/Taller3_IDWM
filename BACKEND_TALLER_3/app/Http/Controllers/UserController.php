@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     //
+    /**
+     * Store a new user, checking all fields
+     * @param request
+     * @return response
+     */
     public function registerUser(Request $request)
     {
         $customMessages = [
@@ -90,7 +95,12 @@ class UserController extends Controller
         }
     }
 
-
+    /**
+     * Update a user data by id.
+     * @param request
+     * @param user
+     * @return response
+     */
     public function update(Request $request, User $user){
         $customMessages = [
             'name.required' => 'Debe completar el campo Nombre Completo',
@@ -143,6 +153,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Change user password
+     * @param request with old and new password
+     * @param user to change password
+     * @return response
+     */
     public function changePassword(Request $request, User $user){
         try {
             DB::beginTransaction();
@@ -175,6 +191,10 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Checks if token is valid
+     * @return boolean true if is valid or false if is not
+     */
     public function validateToken(){
         try{
             JWTAuth::parseToken()->authenticate();

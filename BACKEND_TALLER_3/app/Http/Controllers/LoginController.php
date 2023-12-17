@@ -10,6 +10,11 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class LoginController extends Controller
 {
+     /**
+     * Create a User token, checking credentials
+     * @param request
+     * @return response
+     */
     public function login(Request $request){
         $customMessages = [
             'email.required' => 'Debe completar el campo Correo electrónico.',
@@ -48,6 +53,10 @@ class LoginController extends Controller
         ], 200);
     }
 
+    /**
+     * Delete user token
+     * @return resposne
+     */
     public function logout()
     {
         try {

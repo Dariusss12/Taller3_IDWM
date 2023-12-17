@@ -4,6 +4,11 @@ namespace App\Helpers;
 
 class Helper
 {
+    /**
+     * Verify if rut is valid by last digit
+     * @param rut to validate
+     * @return boolean true if is valid or false if is not.
+     */
     public static function verifyRut($rut)
     {
         // Eliminar puntos y guion del RUT
