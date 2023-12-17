@@ -18,6 +18,7 @@ use App\Http\Controllers\LoginController;
 
 Route::post('/login',[LoginController::class,'login']);
 Route::post('/register',[UserController::class,'registerUser']);
+Route::get('/validate',[UserController::class,'validateToken']);
 
 
 Route::middleware('jwt.verified')->group(function(){

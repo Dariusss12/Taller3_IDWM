@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -166,6 +169,29 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    public function validateToken(){
+        try{
+            JWTAuth::parseToken()->authenticate();
+        }catch(\Exception $e){
+            if($e instanceof TokenInvalidException){
+                return response()->json([
+                    'valid' => 'false'
+                ],401);
+            }
+            if($e instanceof TokenExpiredException){
+                return response()->json([
+                    'valid' => 'false'
+                ],401);
+            }
+            return response()->json([
+                'valid' => 'false'
+            ],401);
+        }
+        return response()->json([
+            'valid' => 'true'
+        ],200);
     }
 
 }
