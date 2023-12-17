@@ -1,8 +1,8 @@
 # Taller 3 de Introducción al Desarrollo Web/Móvil
 
-### Dario Contreras Abaca
+### DarÍo Contreras Abaca
 ****
-## INSTALACION:
+## INSTALACIÓN:
 Debes instalar [Visual Studio Code](https://code.visualstudio.com/) y [Xampp](https://www.apachefriends.org/es/download.html).
 
 Para comenzar la instalación, debes abrir Visual Studio Code, ir a File -> Open Folder, y seleccionar carpeta en donde quieres clonar el proyecto.
