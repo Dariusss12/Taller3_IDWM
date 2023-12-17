@@ -1,6 +1,20 @@
+<!--
+ReposView - Página principal que muestra una lista de repositorios y proporciona
+funcionalidades como edición de usuario, visualización de commits y cambio de contraseña.
+
+@component
+@example
+<ReposView />
+
+@remarks
+Esta página utiliza Ionic con Vue y presenta una interfaz de usuario con modales para editar
+usuario, ver commits y cambiar contraseñas. Además, muestra una lista de repositorios y sus detalles.
+-->
 <template>
   <ion-page>
+    <!-- Sección principal de la página -->
     <ion-content :fullscreen="true" class="container">
+         <!-- Modales para editar usuario, ver commits y cambiar contraseña -->
         <edit-user-modal
         v-if="showEditModal" 
         @close="showEditModal = false"
@@ -19,6 +33,8 @@
         :key="componentKey3"
         >
         </ChangePasswordModal>
+
+        <!-- Encabezado de la página -->
         <div class="flex flex-wrap items-center justify-between h-[10%] h-max-10 bg-[#3880ff] text-white w-full">
             <h1 class="font-bold text-2xl ml-2">Repositorios</h1>
                 <button @click="cerrarSesion" class="w-8 h-8 hover:text-gray-500 mr-5">
@@ -28,8 +44,9 @@
                 </button>
         </div>
 
-        <div class="h-[80%] overflow-auto" v-if="!isLoading">
 
+        <!-- Lista de repositorios -->
+        <div class="h-[80%] overflow-auto" v-if="!isLoading">
             <div v-for="repo in repos" class="m-3 bg-gray-200 rounded-lg p-2 text-gray-700 flex"> 
                 <div class="w-[70%]">
                     <h1 class="font-bold text-l">{{ repo.name }}</h1>
@@ -43,11 +60,10 @@
                     <button @click="openCommitsModal(repo.name)" class="bg-green-500 rounded-lg p-2 font-bold text-white text-xs" :key="commitRepoName">Ver commits</button>
                 </div>
             </div>
-
         </div>
 
+        <!-- Indicador de carga -->
         <div class="h-[80%] flex items-center" v-else>
-
             <svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
             viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
                 <path fill="#3880ff" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
@@ -63,6 +79,7 @@
             </svg>
         </div>
 
+        <!-- Acciones en la parte inferior de la página -->
         <div class="flex items-center h-[10%] bg-[#3a3a3a] w-full fixed justify-between ">
             <div class="w-1/2 text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[25%] h-[25%] mx-auto" @click="openEditModal"> 
@@ -82,6 +99,10 @@
 </template>
 
 <script setup lang="ts">
+
+/**
+ * Importación de componentes y dependencias.
+ */
 import { IonContent, IonPage } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
 import EditUserModal from '@/components/EditUserModal.vue';
@@ -93,14 +114,14 @@ import { getRepos, getCommits } from '@/backend/github';
 
 
 /**
- * Se define las variables como keys
+ * Variables reactivas para forzar el re-renderizado de modals.
  */
  const componentKey1 = ref(0);
  const componentKey2 = ref(0);
  const componentKey3 = ref(0);
 
 /**
- * Funcion para cambiar el valor de componentKey y asì forzar el re-renderizado de los modals
+ * Funciones para forzar el re-renderizado de modals.
  */
 const forceRerender1 = () => {
   componentKey1.value += 1;
@@ -114,38 +135,76 @@ const forceRerender3 = () => {
   componentKey3.value += 1;
 };
 
-
+/**
+ * Función para cerrar la sesión del usuario.
+ * @async
+ * @function cerrarSesion
+ * @returns {Promise<void>} - Promesa resuelta después de cerrar la sesión.
+ */
 async function cerrarSesion(){
     await logout();
     router.push('/')
 };
 
+/**
+ * Estados y funciones para mostrar/ocultar modals.
+ */
 const showEditModal = ref(false);
 const showCommitsModal = ref(false);
 const showChangeModal = ref(false);
 
+/**
+ * Variable para indicar si la página está cargando.
+ * @const {import('vue').Ref<boolean>}
+ */
 const isLoading = ref(true);
 
+/**
+ * Función para abrir el modal de edición de usuario.
+ * @function openEditModal
+ */
 function openEditModal() {
     showEditModal.value = true;
     forceRerender1();
 }
 
+/**
+ * Variable para almacenar el nombre del repositorio para el modal de commits.
+ * @type {string}
+ */
 let commitRepoName = ''
 
+/**
+ * Función para abrir el modal de commits de un repositorio específico.
+ * @function openCommitsModal
+ * @param {string} repoName - Nombre del repositorio.
+ */
 function openCommitsModal(repoName: string) {
     showCommitsModal.value = true;
     commitRepoName = repoName
     forceRerender2();
 }
 
+/**
+ * Función para abrir el modal de cambio de contraseña.
+ * @function openChangeModal
+ */
 function openChangeModal() {
     showChangeModal.value = true;
     forceRerender3();
 }
 
+/**
+ * Lista de repositorios obtenida del backend.
+ * @const {import('vue').Ref<Array<object>>}
+ */
 const repos = ref([]) 
 
+/**
+ * Función para obtener y ordenar los repositorios del usuario.
+ * @async
+ * @function getUserRepos
+ */
 async function getUserRepos() {
     const response = await getRepos();
     repos.value = response;
@@ -157,7 +216,13 @@ async function getUserRepos() {
 }
 
 
-
+/**
+ * Obtiene la cantidad de commits para un repositorio.
+ * @async
+ * @function getCantCommits
+ * @param {string} reposName - Nombre del repositorio.
+ * @returns {Promise<number>} - Promesa resuelta con la cantidad de commits.
+ */
 async function getCantCommits(reposName:string) {
     const response = await getCommits(reposName);
 
@@ -172,12 +237,25 @@ async function getCantCommits(reposName:string) {
     }
 }
 
+/**
+ * Interfaz que representa un objeto con nombres de repositorios y la cantidad
+ * de commits asociados a cada uno.
+ * @interface RepoCommits
+ */
 interface RepoCommits {
   [repoName: string]: number | undefined;
 }
 
+/**
+ * Referencia (posiblemente reactiva) a un objeto que sigue la interfaz RepoCommits.
+ * @const {import('vue').Ref<RepoCommits>}
+ */
 const repoCommits = ref<RepoCommits>({});
-
+/**
+ * Calcula la cantidad de commits para todos los repositorios.
+ * @async
+ * @function calculateCommits
+ */
 async function calculateCommits() {
   for (const repo of repos.value) {
     const commitsCount = await getCantCommits(repo.name);
@@ -187,6 +265,12 @@ async function calculateCommits() {
   }
 }
 
+/**
+ * Formatea la fecha en un formato legible.
+ * @function formatedDate
+ * @param {string} fechaOriginal - Fecha en formato original.
+ * @returns {string} - Fecha formateada.
+ */
 function formatedDate(fechaOriginal: string){
     const fechaFormateada = new Date(fechaOriginal).toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -198,12 +282,15 @@ function formatedDate(fechaOriginal: string){
 }
 
 /**
- * Función OnMounted para abrir el modal de Login cada vez que se ingresa a la vista.
+ * Hook de montaje que se ejecuta cuando el componente está listo.
+ * @function onMounted
+ * @async
  */
  onMounted(async () => {
     await getUserRepos();
     await calculateCommits();
     isLoading.value = false;
+
 });
 
 

@@ -1,4 +1,18 @@
+<!--
+ EditUserModal - Modal que muestra el formulario de editar información.
+ 
+ @component
+ @example
+ <EditUserModal 
+ v-if='showModal == true'
+ @close = 'showModal = false'
+ />
+ 
+ @remarks
+ Esta página utiliza Ionic con Vue y presenta una interfaz de usuario con un formulario para editar información del usuario.
+ /-->
 <template>
+   <!-- Raíz de la transición con la propiedad appear y la condición show -->
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" class="relative z-[50]" @close="closeModal">
         <TransitionChild
@@ -24,6 +38,7 @@
               leave-from="opacity-100 scale-100"
               leave-to="opacity-0 scale-95"
             >
+            
               <DialogPanel class=" w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-3 shadow-xl transition-all" :key="componentKey">
                 <div class="w-full flex justify-end">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-black" @click="closeModal">
@@ -31,8 +46,10 @@
                     </svg>
                   </div>
                 <div v-if="!message">
+                  <!-- Contenido del formulario de edición -->
                   <h1 class="text-center mb-10 text-2xl text-black font-bold">¡Edita tu información!</h1>       
                   <form @submit.prevent="submitForm" class="mx-auto w-full">
+                  <!-- Campos del formulario con mensajes de error condicionales -->
                     <div class="mb-5">
                       <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nombre Completo</label>
                       <input type="text" v-model="formData.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" >
@@ -48,11 +65,13 @@
                       <input type="text" v-model="formData.birth_year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 " >
                       <p v-if="errors.birth_year" class="text-red-500 text-sm my-2">{{ errors.birth_year[0] }}</p>
                     </div>
+                    <!-- Botón para enviar el formulario -->
                     <div class="flex justify-center w-full">
                         <button type="submit" class="text-white  bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5">Guardar cambios</button>
                     </div>
                   </form>
                 </div>
+                <!-- Contenido para mostrar un mensaje de éxito -->
                 <div v-else>
                   <h1 class="text-center text-3xl font-bold text-black">{{ message }}</h1>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[25%] h-[25%] text-green-500 mx-auto my-3">
@@ -66,7 +85,7 @@
         </div>        
       </Dialog>
     </TransitionRoot>
-  </template>
+</template>
   
 <script setup lang="ts">
 /**
@@ -81,13 +100,21 @@ import { editUser } from '@/backend/user';
 import { validateToken } from '@/backend/auth';
 import router from '@/router';
 
+
+/**
+ * Almacén principal de la aplicación.
+ * @type {import('@/stores/main').MainStore}
+ */
 const mainStore = useMainStore();
 /**
- * Se define una variable como key
+ * Variable de reactividad para forzar el re-renderizado de los modales.
+ * @type {import('vue').Ref<number>}
  */
 const componentKey = ref(0);
 /**
- * Funcion para cambiar el valor de componentKey y asì forzar el re-renderizado de los modals
+ * Función para cambiar el valor de componentKey y forzar el re-renderizado de los modales.
+ * @function
+ * @name forceRerender
  */
 const forceRerender = () => {
   componentKey.value += 1;
@@ -95,11 +122,14 @@ const forceRerender = () => {
 
 
 /**
- * Se define una variable como true para el estado del modal
+ * Estado del modal, inicializado como abierto.
+ * @type {import('vue').Ref<boolean>}
  */
 const isOpen = ref<boolean>(true);
 /**
- * Se define una función para cerrar el modal, asignando isOpen como false
+ * Función para cerrar el modal.
+ * @function
+ * @name closeModal
  */
 function closeModal(): void {
   isOpen.value = false;
@@ -108,12 +138,14 @@ function closeModal(): void {
 
 
 /**
- * Se define una lista de errores
+ * Objeto para almacenar errores del formulario.
+ * @type {import('@/interfaces/userForm').FormErrors}
  */
 let errors = ref<FormErrors>({});
 
 /**
- * Se define un formulario.
+ * Objeto para almacenar datos del formulario de edición de usuario.
+ * @type {import('@/interfaces/userForm').FormEditUser}
  */
 const formData = ref<FormEditUser>({
   name: mainStore.user?.name ,
@@ -122,13 +154,15 @@ const formData = ref<FormEditUser>({
 });
 
 /**
- * Se define una variable de mensaje
+ * Variable para almacenar un mensaje.
+ * @type {import('vue').Ref<string>}
  */
  const message = ref('')
 
 /**
- * Se define una función para generar un delay
- * @param milliseconds 
+ * Función para introducir un retraso utilizando una promesa.
+ * @param {number} milliseconds - La cantidad de milisegundos para esperar.
+ * @returns {Promise<void>} - Una promesa que se resuelve después del retraso.
  */
  function delayWithPromise(milliseconds: number): Promise<void> {
   return new Promise((resolve) => {
@@ -139,7 +173,11 @@ const formData = ref<FormEditUser>({
 }
 
 /**
- * Se define la función para enviar el formulario a la api, obteniendo la respuesta y los errores.
+ * Función para enviar el formulario a la API, gestionar la respuesta y los errores.
+ * @async
+ * @function
+ * @name submitForm
+ * @returns {Promise<void>} - Una promesa que se resuelve después del procesamiento del formulario.
  */
 async function submitForm(): Promise<void> {
   errors.value = {};
@@ -149,7 +187,7 @@ async function submitForm(): Promise<void> {
       if(isValid.data.valid === 'true'){
         const response = await editUser(formData.value);
         mainStore.user = response.data.user;
-        message.value = '¡Tus datos se han editado con éxito!'
+        message.value = '¡Tus datos se han actualizado con éxito!'
         await delayWithPromise(2000);
         closeModal();
       }

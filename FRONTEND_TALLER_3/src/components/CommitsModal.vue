@@ -1,3 +1,16 @@
+<!--
+ CommitsModal - Modal que muestra los commits de un repo.
+ 
+ @component
+ @example
+ <CommitsModal 
+ v-if='showModal == true'
+ @close = 'showModal = false'
+ />
+ 
+ @remarks
+ Esta página utiliza Ionic con Vue y presenta una interfaz de usuario con los commits de un repo.
+ /-->
 <template>
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" class="relative z-[50]" @close="closeModal">
@@ -30,6 +43,8 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
+
+                <!-- Indicador de carga -->
                 <div v-if="isLoading">
                   <svg version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                     viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
@@ -45,7 +60,7 @@
                     </path>
                   </svg>
                 </div>
-                
+                <!-- Lista de commits del repositorio -->
                 <div v-else>
                   <h1 class="text-center mb-10 text-2xl text-black font-bold">Commits de {{ prop.repoName }}</h1>    
                   <div v-for="commit in commits" class=" m-3">
@@ -61,7 +76,7 @@
         </div>        
       </Dialog>
     </TransitionRoot>
-  </template>
+</template>
   
 <script setup lang="ts">
 /**
@@ -73,18 +88,28 @@ import { getCommits } from '@/backend/github';
 
 
 /**
- * Se define una variable como true para el estado del modal
+ * Variable de reactividad para el estado del modal, inicializado como abierto.
+ * @type {import('vue').Ref<boolean>}
  */
 const isOpen = ref<boolean>(true);
 /**
- * Se define una función para cerrar el modal, asignando isOpen como false
+ * Variable de reactividad para el estado del modal, inicializado como abierto.
+ * @type {import('vue').Ref<boolean>}
  */
 function closeModal(): void {
   isOpen.value = false;
 }
 
+/**
+ * Variable de reactividad para indicar si la carga está en progreso.
+ * @type {import('vue').Ref<boolean>}
+ */
 const isLoading = ref(true);
 
+/**
+ * Propiedad para almacenar el nombre del repositorio.
+ * @type {import('vue').Ref<string>}
+ */
 const prop = defineProps({
   repoName: {
     type: String,
@@ -92,8 +117,18 @@ const prop = defineProps({
   }
 })
 
+/**
+ * Variable reactiva para almacenar la lista de commits.
+ * @type {import('vue').Ref<Array<any>>}
+ */
 const commits = ref([]) 
 
+/**
+ * Función asincrónica para obtener y ordenar los commits del repositorio.
+ * @async
+ * @function
+ * @name getRepoCommits
+ */
 async function getRepoCommits() {
   if(prop.repoName){
     const response = await getCommits(prop.repoName);
@@ -106,7 +141,13 @@ async function getRepoCommits() {
   }
   
 }
-
+/**
+ * Función para formatear la fecha.
+ * @function
+ * @name formatedDate
+ * @param {string} fechaOriginal - La fecha original en formato de cadena.
+ * @returns {string} - La fecha formateada.
+ */
 function formatedDate(fechaOriginal: string){
     const fechaFormateada = new Date(fechaOriginal).toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -119,14 +160,12 @@ function formatedDate(fechaOriginal: string){
 
 /**
  * Función OnMounted para abrir el modal de Login cada vez que se ingresa a la vista.
+ * @function
+ * @name onMounted
  */
  onMounted(async () => {
     await getRepoCommits();
     isLoading.value = false
 });
-
-
-
-
 
 </script>

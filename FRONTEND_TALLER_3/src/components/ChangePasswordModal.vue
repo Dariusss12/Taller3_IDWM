@@ -1,3 +1,16 @@
+<!--
+ ChangePasswordModal - Modal que muestra un formulario para cambiar la contrasenia.
+ 
+ @component
+ @example
+ <ChangePasswordModal 
+ v-if='showModal == true'
+ @close = 'showModal = false'
+ />
+ 
+ @remarks
+ Esta página utiliza Ionic con Vue y presenta una interfaz de usuario con el formulario para cambiar la contrasenia.
+ /-->
 <template>
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" class="relative z-[50]" @close="closeModal">
@@ -30,9 +43,12 @@
                       <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
+
+                <!-- Contenido del formulario -->
                 <div v-if="!message">
                   <h1 class="text-center mb-10 text-2xl text-black font-bold">¡Cambia tu contraseña!</h1>       
                   <form @submit.prevent="submitForm" class="mx-auto w-full">
+                    <!-- Campos del formulario con mensajes de error condicionales -->
                     <div class="mb-5">
                       <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Contraseña antigua</label>
                       <input type="password" v-model="formData.old_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" >
@@ -44,11 +60,13 @@
                       <p v-if="errors.new_password" class="text-sm text-[#ff0000] w-full mx-auto mt-1">{{ errors.new_password[0]}}</p>
                     </div>
                     <p v-if="errors.credentials" class="text-sm text-[#ff0000] w-full mx-auto mb-3">{{ errors.credentials }}</p>
+                    <!-- Botón para enviar el formulario -->
                     <div class="flex justify-center w-full">
                         <button type="submit" class="text-white  bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5">Guardar cambios</button>
                     </div>
                   </form>
                 </div>
+                <!-- Contenido para mostrar un mensaje de éxito -->
                 <div v-else>
                   <h1 class="text-center text-3xl font-bold text-black">{{ message }}</h1>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-[25%] h-[25%] text-green-500 mx-auto my-3">
@@ -62,7 +80,7 @@
         </div>        
       </Dialog>
     </TransitionRoot>
-  </template>
+</template>
   
 <script setup lang="ts">
 /**
@@ -77,13 +95,23 @@ import { changePassword } from '@/backend/user';
 import { validateToken, logout } from '@/backend/auth';
 import router from '@/router';
 
+/**
+ * Almacén principal de la aplicación.
+ * @type {Object}
+ * @const
+ */
 const mainStore = useMainStore();
 /**
- * Se define una variable como key
+ * Se define una variable como key.
+ * @type {Ref<number>}
+ * @const
  */
 const componentKey = ref(0);
 /**
- * Funcion para cambiar el valor de componentKey y asì forzar el re-renderizado de los modals
+ * Función para cambiar el valor de componentKey y así forzar el re-renderizado de los modals.
+ * @function
+ * @name forceRerender
+ * @returns {void}
  */
 const forceRerender = () => {
   componentKey.value += 1;
@@ -91,11 +119,16 @@ const forceRerender = () => {
 
 
 /**
- * Se define una variable como true para el estado del modal
+ * Se define una variable como true para el estado del modal.
+ * @type {Ref<boolean>}
+ * @const
  */
 const isOpen = ref<boolean>(true);
 /**
- * Se define una función para cerrar el modal, asignando isOpen como false
+ * Función para cerrar el modal, asignando isOpen como false.
+ * @function
+ * @name closeModal
+ * @returns {void}
  */
 function closeModal(): void {
   isOpen.value = false;
@@ -104,12 +137,16 @@ function closeModal(): void {
 
 
 /**
- * Se define una lista de errores
+ * Se define una lista de errores.
+ * @type {Ref<FormErrors>}
+ * @const
  */
 let errors = ref<FormErrors>({});
 
 /**
  * Se define un formulario.
+ * @type {Ref<FormChangePassword>}
+ * @const
  */
 const formData = ref<FormChangePassword>({
   old_password: '',
@@ -117,13 +154,18 @@ const formData = ref<FormChangePassword>({
 });
 
 /**
- * Se define una variable de mensaje
+ * Se define una variable de mensaje.
+ * @type {Ref<string>}
+ * @const
  */
  const message = ref('')
 
 /**
- * Se define una función para generar un delay
- * @param milliseconds 
+ * Función para generar un delay con una promesa.
+ * @function
+ * @name delayWithPromise
+ * @param {number} milliseconds - El tiempo de delay en milisegundos.
+ * @returns {Promise<void>}
  */
  function delayWithPromise(milliseconds: number): Promise<void> {
   return new Promise((resolve) => {
@@ -134,7 +176,11 @@ const formData = ref<FormChangePassword>({
 }
 
 /**
- * Se define la función para enviar el formulario a la api, obteniendo la respuesta y los errores.
+ * Función para enviar el formulario a la API, obteniendo la respuesta y los errores.
+ * @async
+ * @function
+ * @name submitForm
+ * @returns {Promise<void>}
  */
 async function submitForm(): Promise<void> {
   errors.value = {};
