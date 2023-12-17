@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "e29a1664-bed2-4526-8c12-65d90ae1bff3",
+		"name": "Taller 3",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30895478"
+	},
+	"item": [
+		{
+			"name": "Registrar usuario",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Usuario de prueba\",\r\n    \"email\": \"test@ucn.cl\",\r\n    \"birth_year\":\"2023\",\r\n    \"rut\":\"20.544.302-9\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/api/register"
+			},
+			"response": []
+		},
+		{
+			"name": "Loggear usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"test@ucn.cl\",\r\n    \"password\": \"205443029\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/api/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Editar usuario",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzAyNzk3NTEyLCJleHAiOjE3MDI4MDExMTIsIm5iZiI6MTcwMjc5NzUxMiwianRpIjoiUEswUExDMU01QkVLdUMzcCIsInN1YiI6IjEwIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.c6t0gQCmqhbPknxHo1mVxnNtTIxftGv4tIhFF-gls68"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Usuario de prueba2\",\r\n    \"email\": \"test2@ucn.cl\",\r\n    \"birth_year\":\"2021\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/api/users/10"
+			},
+			"response": []
+		},
+		{
+			"name": "Cambiar password",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzAyNzk3NTEyLCJleHAiOjE3MDI4MDExMTIsIm5iZiI6MTcwMjc5NzUxMiwianRpIjoiUEswUExDMU01QkVLdUMzcCIsInN1YiI6IjEwIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.c6t0gQCmqhbPknxHo1mVxnNtTIxftGv4tIhFF-gls68"
+					}
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"old_password\":\"205443029\",\r\n    \"new_password\":\"test\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8000/api/users/10/changePassword"
+			},
+			"response": []
+		}
+	]
+}
