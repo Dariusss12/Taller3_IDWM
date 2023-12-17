@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="container" >
-      <router-link to="/" class="fixed mt-3" @click="clearAll()">
+      <router-link to="/" class="fixed mt-3">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
         </svg>
@@ -92,25 +92,24 @@ async function submitForm(): Promise<void> {
       const response = await login(formData.value);
       mainStore.user = response.user;
       mainStore.token = response.token;
-      console.log(response.token)
-      console.log(mainStore.token)
       const username = await getUsername(response.user.email);
       mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')
       forceRerender();
+      errors.value = {};
+      formData.value.email = '';
+      formData.value.password = '';
       
   } catch (error: any) {
     errors = { ...error.response.data } || {};
     forceRerender();
+    errors.value = {};
+    formData.value.email = '';
+    formData.value.password = '';
+    
   }
 }
 
-function clearAll(){
-  formData.value.email = '';
-  formData.value.password = '';
-  errors = ref<FormErrors>({});
-
-}
 
 </script>
 

@@ -5,6 +5,11 @@ export interface FormErrors {
 export interface FormEditUser {
     name: string;
     email: string;
-    birth_year: number;
+    birth_year: string;
  
+};
+
+export interface FormChangePassword {
+    old_password: string;
+    new_password: string;
 };

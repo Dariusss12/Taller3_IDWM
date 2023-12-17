@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
+import { validateToken } from '@/backend/auth';
 
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '@/views/LoginView.vue';
@@ -42,7 +43,7 @@ router.beforeEach((to, from, next) => {
   } else if ((to.path === '/login' || to.path === '/register' || to.path === '/') && mainStore.token) {
     next('/repos');
     return;
-  }
+  } 
   else {
     next();
   }

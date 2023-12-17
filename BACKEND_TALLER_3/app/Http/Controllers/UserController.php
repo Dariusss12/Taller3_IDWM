@@ -146,14 +146,18 @@ class UserController extends Controller
     public function changePassword(Request $request, User $user){
         try {
             DB::beginTransaction();
+            $customMessages = [
+                'old_password.required' => 'Debe completar el campo Contraseña antigua',
+                'new_password.required' => 'Debe completar el campo Contraseña nueva',
 
+            ];
             $fields = $request->validate([
                 'old_password' => 'required',
                 'new_password' => 'required',
-            ]);
+            ],$customMessages);
 
             if (!Hash::check($fields['old_password'], $user->password)) {
-                throw new \Exception('La contraseña actual ingresada no es válida.');
+                return response()->json(['credentials' => 'Contraseña antigua incorrecta'], 500);
             }
 
             $user->update([
@@ -163,11 +167,11 @@ class UserController extends Controller
             JWTAuth::invalidate(JWTAuth::parseToken());
 
             DB::commit();
-            return response()->json(['user' => $user], 200);
+            return response()->json(['succces' => 'true'], 200);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => $e->getMessage()], 500);
+            return response()->json($e->errors(), 500);
         }
     }
 

@@ -31,23 +31,19 @@
                     </svg>
                   </div>
                 <div v-if="!message">
-                  <h1 class="text-center mb-10 text-2xl text-black font-bold">¡Edita tu información!</h1>       
+                  <h1 class="text-center mb-10 text-2xl text-black font-bold">¡Cambia tu contraseña!</h1>       
                   <form @submit.prevent="submitForm" class="mx-auto w-full">
                     <div class="mb-5">
-                      <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Nombre Completo</label>
-                      <input type="text" v-model="formData.name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" >
-                      <p v-if="errors.name"  class="text-red-500 text-sm my-2">{{ errors.name[0] }}</p>
+                      <label for="name" class="block mb-2 text-sm font-medium text-gray-900">Contraseña antigua</label>
+                      <input type="password" v-model="formData.old_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5" >
+                      <p v-if="errors.old_password" class="text-sm text-[#ff0000] w-full mx-auto mt-1">{{ errors.old_password[0]}}</p>
                     </div>
                     <div class="mb-5 ">
-                      <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Correo Electrónico</label>
-                      <input type="text" v-model="formData.email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 " novalidate>
-                      <p v-if="errors.email" class="text-red-500 text-sm my-2">{{ errors.email[0] }}</p>
+                      <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Contraseña nueva</label>
+                      <input type="password" v-model="formData.new_password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 " novalidate>
+                      <p v-if="errors.new_password" class="text-sm text-[#ff0000] w-full mx-auto mt-1">{{ errors.new_password[0]}}</p>
                     </div>
-                    <div class="mb-5 ">
-                      <label for="points_earned" class="block mb-2 text-sm font-medium text-gray-900">Año de nacimiento</label>
-                      <input type="text" v-model="formData.birth_year" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 " >
-                      <p v-if="errors.birth_year" class="text-red-500 text-sm my-2">{{ errors.birth_year[0] }}</p>
-                    </div>
+                    <p v-if="errors.credentials" class="text-sm text-[#ff0000] w-full mx-auto mb-3">{{ errors.credentials }}</p>
                     <div class="flex justify-center w-full">
                         <button type="submit" class="text-white  bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5">Guardar cambios</button>
                     </div>
@@ -76,9 +72,9 @@ import { ref } from 'vue';
 import { TransitionRoot, TransitionChild, Dialog, DialogPanel } from '@headlessui/vue';
 import { useMainStore } from '@/stores/main';
 import { FormErrors } from '@/interfaces/userForm';
-import { FormEditUser } from '@/interfaces/userForm';
-import { editUser } from '@/backend/user';
-import { validateToken } from '@/backend/auth';
+import { FormChangePassword } from '@/interfaces/userForm';
+import { changePassword } from '@/backend/user';
+import { validateToken, logout } from '@/backend/auth';
 import router from '@/router';
 
 const mainStore = useMainStore();
@@ -115,10 +111,9 @@ let errors = ref<FormErrors>({});
 /**
  * Se define un formulario.
  */
-const formData = ref<FormEditUser>({
-  name: mainStore.user?.name ,
-  email: mainStore.user?.email,
-  birth_year: mainStore.user?.birth_year,
+const formData = ref<FormChangePassword>({
+  old_password: '',
+  new_password: ''
 });
 
 /**
@@ -147,11 +142,14 @@ async function submitForm(): Promise<void> {
   try {
       const isValid = await validateToken();
       if(isValid.data.valid === 'true'){
-        const response = await editUser(formData.value);
+        const response = await changePassword(formData.value);
         mainStore.user = response.data.user;
-        message.value = '¡Tus datos se han editado con éxito!'
+        message.value = '¡Tu contraseña se ha cambiado con exito!'
         await delayWithPromise(2000);
         closeModal();
+        mainStore.token = '';
+        mainStore.user = null;
+        router.push('/')
       }
       else{
         mainStore.token = '';
@@ -163,6 +161,7 @@ async function submitForm(): Promise<void> {
 
   } catch (error: any) {
     errors = { ...error.response.data } || {};
+    console.log(errors)
     forceRerender();
   }
 }
