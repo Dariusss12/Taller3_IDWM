@@ -105,13 +105,20 @@ usuario, ver commits y cambiar contraseñas. Además, muestra una lista de repos
  */
 import { IonContent, IonPage } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
+import { useMainStore } from '@/stores/main';
 import EditUserModal from '@/components/EditUserModal.vue';
 import CommitsModal from '@/components/CommitsModal.vue';
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue';
 import router from '@/router';
-import { logout } from '../backend/auth'
+import { logout, validateToken } from '../backend/auth'
 import { getRepos, getCommits } from '@/backend/github';
 
+/**
+ * Almacén principal de la aplicación.
+ * @type {Object}
+ * @const
+ */
+ const mainStore = useMainStore();
 
 /**
  * Variables reactivas para forzar el re-renderizado de modals.
@@ -287,9 +294,16 @@ function formatedDate(fechaOriginal: string){
  * @async
  */
  onMounted(async () => {
+    const isValid = await validateToken();
+    if(isValid.data.valid === 'false'){
+        mainStore.token = '';
+        mainStore.user = null;
+        router.push('/')
+    }
     await getUserRepos();
     await calculateCommits();
     isLoading.value = false;
+
 
 });
 

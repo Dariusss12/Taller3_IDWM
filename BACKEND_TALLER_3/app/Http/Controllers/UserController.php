@@ -202,16 +202,16 @@ class UserController extends Controller
             if($e instanceof TokenInvalidException){
                 return response()->json([
                     'valid' => 'false'
-                ],401);
+                ],200);
             }
             if($e instanceof TokenExpiredException){
                 return response()->json([
                     'valid' => 'false'
-                ],401);
+                ],200);
             }
             return response()->json([
                 'valid' => 'false'
-            ],401);
+            ],200);
         }
         return response()->json([
             'valid' => 'true'

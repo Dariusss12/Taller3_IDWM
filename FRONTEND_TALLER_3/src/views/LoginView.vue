@@ -148,6 +148,7 @@ async function submitForm(): Promise<void> {
       errors = ref<FormErrors>({});
       
   } catch (error: any) {
+    console.log(error)
     errors = { ...error.response.data } || {};
     forceRerender();
    
