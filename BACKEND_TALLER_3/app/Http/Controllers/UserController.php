@@ -26,11 +26,11 @@ class UserController extends Controller
 
             'rut.required' => 'Debe completar el campo RUT',
             'rut.regex' => 'El formato del RUT es incorrecto',
-            'rut.unique' => 'El RUT ingresado ya existe en el sistmea',
+            'rut.unique' => 'El RUT ingresado ya existe en el sistema',
 
             'email.required' => 'Debe completar el campo Correo electrónico',
             'email.regex' => 'El correo electrónico debe ser de dominio UCN',
-            'email.unique' => 'El correo electrónico ingresado ya existe en el sistmea',
+            'email.unique' => 'El correo electrónico ingresado ya existe en el sistema',
 
             'birth_year.required' => 'Debe completar el campo Año de nacimiento',
             'birth_year.integer' => 'El valor ingresado debe ser un entero',
@@ -99,7 +99,7 @@ class UserController extends Controller
 
             'email.required' => 'Debe completar el campo Correo electrónico',
             'email.regex' => 'El correo electrónico debe ser de dominio UCN',
-            'email.unique' => 'El correo electrónico ingresado ya existe en el sistmea',
+            'email.unique' => 'El correo electrónico ingresado ya existe en el sistema',
 
             'birth_year.required' => 'Debe completar el campo Año de nacimiento',
             'birth_year.integer' => 'El valor ingresado debe ser un entero',

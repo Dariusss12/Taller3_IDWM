@@ -96,17 +96,14 @@ async function submitForm(): Promise<void> {
       mainStore.githubUsername = username.data.items[0].login;
       router.push('/repos')
       forceRerender();
-      errors.value = {};
       formData.value.email = '';
       formData.value.password = '';
+      errors = ref<FormErrors>({});
       
   } catch (error: any) {
     errors = { ...error.response.data } || {};
     forceRerender();
-    errors.value = {};
-    formData.value.email = '';
-    formData.value.password = '';
-    
+   
   }
 }
 

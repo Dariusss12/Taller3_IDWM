@@ -3,6 +3,9 @@
     <ion-content :fullscreen="true"  class="container">
         <div class="flex h-full items-center">
             <div>
+              <ion-row>
+                <h1 class="w-full text-center text-4xl mb-10 font-bold">MobileHub</h1>
+              </ion-row>
                 <ion-row>
                     <ion-img
                     class="w-11/12 h-11/12 mx-auto mb-5"

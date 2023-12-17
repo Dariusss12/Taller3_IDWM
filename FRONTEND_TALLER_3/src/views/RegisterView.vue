@@ -111,8 +111,12 @@ async function submitForm(): Promise<void> {
       const response = await register(formData.value);
       mainStore.user = response.user;
       mainStore.token = response.token
-      const username = await getUsername(response.user.email);
-      mainStore.githubUsername = username.data.items[0].login;
+      //Para obtener el nombre de usuario de github por el correo.
+      //const username = await getUsername(response.user.email);
+      //Para setear el nombre en la mainstore
+      //mainStore.githubUsername = response.data.items[0].login;
+      mainStore.githubUsername = 'Dizkm8';
+      clearAll();
       router.push('/repos')
       
   } catch (error: any) {
@@ -127,7 +131,6 @@ function clearAll(){
   formData.value.birth_year = currentYear;
   formData.value.rut = '';
   errors = ref<FormErrors>({});
-
 }
 
 </script>
