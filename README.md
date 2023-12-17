@@ -118,6 +118,8 @@ Abrir el enlace indicado por la consola como "Local:" para visualizar la página
   ➜  Network: use --host to expose
   ➜  press h to show help
 ```
+Luego en el navegador debes abrir las herramientas de desarrollador (en el caso de Google Chrome apretando la tecla F12) y seleccionar las dimensiones de la pantalla como cualquier modelo de teléfono disponible.
+
 ****
 ## Postman
 
