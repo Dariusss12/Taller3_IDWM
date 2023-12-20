@@ -13,7 +13,7 @@ export const useMainStore = defineStore({
     } => ({
         user: null,
         token: '',
-        githubToken: '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',
+        githubToken: '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',
         githubUsername: '',
     }),
     persist: true
